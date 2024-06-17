@@ -4,10 +4,14 @@ const db = sql('meals.db');
 
 
 export async function getMeals() {
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // timeout for tutorial purposes
+    // await new Promise((resolve) => setTimeout(resolve, 2000)); // timeout for tutorial purposes
 
     // throw new Error('Loading meals failed')
     return db.prepare('SELECT * FROM meals').all(); // can use get insted of all if it is a single row
 
 
+}
+
+export function getMeal(slug: string) {
+    return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug)
 }
