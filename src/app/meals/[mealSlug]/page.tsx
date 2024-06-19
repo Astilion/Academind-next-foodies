@@ -2,9 +2,10 @@ import { getMeal } from '@/lib/meals'
 import classes from './page.module.css'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { Meal } from '@/src/types/meal'
 
 export default function MealDetailsPage({ params }: { params: { mealSlug: string } }) {
-  const meal = getMeal(params.mealSlug)
+  const meal: Meal | undefined = getMeal(params.mealSlug)
 
   if (!meal) {
     notFound()

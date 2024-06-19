@@ -1,4 +1,5 @@
 import sql from 'better-sqlite3'
+import { Meal } from '@/src/types/meal';
 
 const db = sql('meals.db');
 
@@ -12,6 +13,7 @@ export async function getMeals() {
 
 }
 
-export function getMeal(slug: string) {
-    return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug)
+export function getMeal(slug: string): Meal | undefined {
+    const result =  db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug)
+    return result as Meal | undefined
 }
