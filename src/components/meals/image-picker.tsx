@@ -1,48 +1,67 @@
-'use client'
-import { useRef, useState } from 'react'
-import classes from './image.picker.module.css'
-import Image from 'next/image'
+'use client';
+import { useRef, useState, ChangeEvent } from 'react';
+import classes from './image.picker.module.css';
+import Image from 'next/image';
 
-export default function ImagePicker({ label, name }) {
-    const [pickedImage, setPickedImage] = useState()
-    const imageInputRef = useRef()
-    const handlePickClick = () => {
-        imageInputRef.current.click();
-    }
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
+interface ImagePickerProps {
+    label: string;
+    name: string;
+}
+
+const ImagePicker = ({ label, name } :ImagePickerProps) => {
+    const [pickedImage, setPickedImage] = useState<string | undefined>(undefined);
+    const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+    const handlePickClick = (): void => {
+        if (imageInputRef.current) {
+            imageInputRef.current.click();
+        }
+    };
+
+    const handleImageChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        const file = event.target.files?.[0];
 
         if (!file) {
-            setPickedImage(null);
+            setPickedImage(undefined);
             return;
-          }
+        }
 
         const fileReader = new FileReader();
 
-        fileReader.onload = () => { 
-            setPickedImage(fileReader.result)
-        }
+        fileReader.onload = () => {
+            const result = fileReader.result;
+            if (typeof result === 'string') {
+                setPickedImage(result);
+            }
+        };
+
         fileReader.readAsDataURL(file);
-    }
+    };
+
     return (
         <div className={classes.picker}>
-            <label htmlFor={name} >{label}</label>
+            <label htmlFor={name}>{label}</label>
             <div className={classes.controls}>
-            <div className={classes.preview}>
+                <div className={classes.preview}>
                     {!pickedImage && <p>No image picked yet.</p>}
-                    {pickedImage && <Image src={pickedImage} alt="The image selected by the user." fill/>}
+                    {pickedImage && <Image src={pickedImage} alt="The image selected by the user." layout="fill" />}
                 </div>
                 <input
                     className={classes.input}
                     type="file"
-                    accept="image/pnt, image/jpeg"
+                    accept="image/png, image/jpeg"
                     name={name}
                     id={name}
                     ref={imageInputRef}
-                    onChange={handleImageChange} 
-                    required/>
-                <button className={classes.button} type='button' onClick={handlePickClick}>Pick an Image</button>
+                    onChange={handleImageChange}
+                    required
+                />
+                <button className={classes.button} type="button" onClick={handlePickClick}>
+                    Pick an Image
+                </button>
             </div>
         </div>
-    )
-}
+    );
+};
+
+export default ImagePicker;
